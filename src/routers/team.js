@@ -89,7 +89,7 @@ router.delete('/teams/:id',[auth,admin],async (req, res) => {
   // isAdmin(req,res)
     const id = req.params.id
     try {
-        const team = await Team.findByIdAndDelete(id)
+        const team = await Team.findByIdAndDelete(id,['fullName','teamCode'])
         if (!team) {
             return res.status(404).send({'Status':'Error','Description':'No Record Found'})
         }
@@ -98,6 +98,32 @@ router.delete('/teams/:id',[auth,admin],async (req, res) => {
           res.status(500).send({'Status':'Error','Description':e})
       }
 })
+
+router.post('/teams/search',async (req, res) => {
+    // isAdmin(req,res)
+    const searchParams = Object.keys(req.body)
+     if (searchParams.length == 0){
+        return res.status(403).send({'Status':'Error','Description':'Please Pass A Search Parameter'})
+     }
+     const allowedFields = ['fullName','teamCode']
+    const isValidField = searchParams.every((searchParam)=> allowedFields.includes(searchParam))
+    if(!isValidField) {
+        return res.status(400).send({'Status':'Error','Description': 'Please Ensure Field Only Existing Fields are Updated'})
+    }
+     const searchVariable = {};
+     searchParams.forEach((searchParam)=>{
+        searchVariable[searchParam] = req.body[searchParam]
+     })
+      try {
+          const team = await Team.find(searchVariable,['fullName','teamCode'])
+          if (team.length == 0) {
+              return res.status(404).send({'Status':'Error','Description':'Search Returns No Record'})
+          }
+          res.send({'Status':'Success','Description':'Team Successfully Fetched','Team':team})
+        } catch(e) {
+            res.status(500).send({'Status':'Error','Description':e})
+        }
+  })
 
 
 module.exports = router

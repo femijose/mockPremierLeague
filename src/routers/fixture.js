@@ -33,7 +33,7 @@ router.get('/fixtures',auth, async (req,res) => {
         } 
         else {
             try {
-            const fixtures = await Fixture.find({})
+            const fixtures = await Fixture.find({}).select('-__v')
             if (fixtures.length == 0) {
                 return res.status(404).send({'Status':'Success','Description':'No Record Found'})
             }
@@ -58,7 +58,7 @@ router.get('/fixtures/:id',auth, async (req, res) => {
         } 
         else {
             try {
-                const fixture = await Fixture.findById(id)
+                const fixture = await Fixture.findById(id).select('-__v');
                 if (!fixture) {
                     return res.status(404).send({'Status':'Success','Description':'No Record Found'})
                 }
@@ -84,7 +84,7 @@ router.get('/fixtures/status/:status',auth, async (req, res) => {
                 } 
                 else {
                     try {
-                        const fixtures = await Fixture.find({completed})
+                        const fixtures = await Fixture.find({completed}).select('-__v')
                         if (!fixtures) {
                             return res.status(404).send({'Status':'Success','Description':'No Record Found'})
                         }
@@ -139,6 +139,33 @@ router.delete('/fixtures/:id',[auth,admin], async (req, res) => {
           res.status(500).send({'Status':'Error','Description':e})
       }
 })
+
+router.post('/fixtures/search',async (req, res) => {
+    // isAdmin(req,res)
+    const searchParams = Object.keys(req.body)
+     if (searchParams.length == 0){
+        return res.status(403).send({'Status':'Error','Description':'Please Pass A Search Parameter'})
+     }
+     const allowedFields = ['homeTeam','awayTeam','fixtureDate','homeTeamScore','awayTeamScore','completed']
+    const isValidField = searchParams.every((searchParam)=> allowedFields.includes(searchParam))
+    if(!isValidField) {
+        return res.status(400).send({'Status':'Error','Description': 'Please Ensure Field Only Existing Fields are Updated'})
+    }
+     const searchVariable = {};
+     searchParams.forEach((searchParam)=>{
+        searchVariable[searchParam] = req.body[searchParam]
+     })
+     
+      try {
+          const fixture = await Fixture.find(searchVariable).select('-__v')
+          if (fixture.length == 0) {
+              return res.status(404).send({'Status':'Error','Description':'Search Returns No Record'})
+          }
+          res.send({'Status':'Success','Description':'Fixture Successfully Fetched','Fixture':fixture})
+        } catch(e) {
+            res.status(500).send({'Status':'Error','Description':e})
+        }
+  })
 
 
 module.exports = router
