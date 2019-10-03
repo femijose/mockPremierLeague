@@ -22,7 +22,7 @@ app.use(session({
     saveUninitialized: true,
     cookie: { secure: false }, 
     //store: new redisStore({ host: process.env.REDIS_HOST, port: process.env.REDIS_PORT, client: client, ttl: process.env.REDIS_TTL }),
-    store: new redisStore({ host: redisURL.hostname, port: redisURL.port, client: client, ttl: process.env.REDIS_TTL }),
+    store: new redisStore({client: client, ttl: process.env.REDIS_TTL }),
   })) 
   /* app.use(
     session({
