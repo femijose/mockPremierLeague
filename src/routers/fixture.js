@@ -6,7 +6,7 @@ const redis = require('redis')
 const admin = require('../middleware/admin')
 const redisPort = process.env.REDIS_PORT
 
-const client = redis.createClient(redisPort)
+const client = redis.createClient(process.env.REDISCLOUD_URL)
 
 
 const router = new express.Router()
