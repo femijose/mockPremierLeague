@@ -5,8 +5,8 @@ This is an API that serves the latest scores of fixtures of matches in a “**Mo
 It has methods that allow
   - signup/login of normal and admin users
   - management of teams (add, remove, edit, view)
-  - creation fixtures (add, remove, edit, view) 
-  - Generation unique links for fixture upon creation
+  - creation of fixtures (add, remove, edit, view) 
+  - Generation of unique links for fixture upon creation
   - viewing completed fixtures
   - viewing pending fixtures
   - robust search  of fixtures/teams
@@ -38,8 +38,6 @@ API Documentation - https://documenter.getpostman.com/view/912151/SVtR1VVDa
 - Jest
 - Express
 
-
-=
 
 
 
