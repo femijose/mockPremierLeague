@@ -10,7 +10,7 @@ router.post('/users', async (req, res) => {
     try {
         await user.save()
         const token = await user.generateToken()
-       // req.session.username=req.body.username
+        req.session.username=req.body.username
         res.status(201).send({'Status':'Success','Description':'User Successfully Created',token})
     } catch(e) {
         res.status(400).send({'Status':'Error','Description':e})
@@ -23,7 +23,7 @@ router.post('/users/login', async (req, res) => {
     try {
         const user = await User.logUserIn(req.body.username, req.body.password)
         const token = await user.generateToken()
-        //req.session.username = req.body.username
+        req.session.username = req.body.username
         res.send({ 'Status':'Success','Description':'Login Successful',token })
     } catch (e) {
    res.status(400).send({'Status':'Error','Description':'Invalid Login Details'})
